@@ -11,7 +11,7 @@ duration = 5.0  # seconds
 fade_time = 0.1  # seconds for fade-in/out
 frequencies = [125, 250, 500, 1000, 2000, 4000, 6000, 8000]  # Hz
 target_spl = 60  # Target SPL in dB SPL
-# amplitudes = [0.01]  # Signal amplitudes
+
 ch = "R"  
 # ch = "L"
 RETSPL_file = "RETSPLdd45.mat"  # Load RETSPL table from .mat file
@@ -19,17 +19,6 @@ ATfreq = loadmat(RETSPL_file)['ATfreq'].squeeze()
 AThresh = loadmat(RETSPL_file)['AThresh'].squeeze()
 # mode = 'HL'
 mode = 'SPL'  # 'HL' or 'SPL'
-# retspl_table = { 
-#     125: 45.0,
-#     250: 27.0,
-#     500: 13.5,
-#     1000: 7.5,
-#     2000: 9.0,
-#     4000: 12.0,
-#     6000: 16.0,
-#     8000: 15.5
-# }
-# output_file = f"headphone_calibration_stereo_{ch}.csv"
 
 # === Signal generator with fade-in/out ===
 def generate_stereo_tone(f, amp):
@@ -43,7 +32,7 @@ def generate_stereo_tone(f, amp):
 
     return tone
 
-# === Calibration loop ===
+
 results = {}
 results["headName"] = "DD-45"
 results["Channel"] = ch
@@ -52,41 +41,9 @@ results["Amplitude"] = []
 results["SPL (dB SPL)"] = []
 results["TrFuncAE"] = []
 # rec = []
-
+# === Calibration loop ===
 print("Calibration starting... Ensure SLM is ready and headphone is seated on artificial ear.")
 
-# for f in frequencies:
-#     for amp in amplitudes:    
-#         print(f"\n Playing {f} Hz @ amp {amp:.3f} to {ch} channel...")
-#         tone = generate_stereo_tone(f, amp)
-#         print(tone.shape)
-#         if ch == "L":
-#             # rec = sd.playrec(tone, device=24, input_mapping=5, output_mapping=5, samplerate=fs, blocking=True, blocksize=1024)
-#             sd.play(tone, fs, device=24, mapping=5)
-#         elif ch == "R":
-#             # rec = sd.playrec(tone, device=24, input_mapping=5, output_mapping=6, samplerate=fs, blocking=True, blocksize=1024)
-#             sd.play(tone, fs, device=24, mapping=6)
-#         else:
-#             print("Invalid channel specified. Skipping.")
-#             continue
-#         sd.wait()
-
-#         spl = input(f"Enter SPL (dB SPL) from SLM for {ch} channel at {f} Hz & amp {amp}: ")
-#         spl = float(spl)
-#         retspl = retspl_table[f]
-#         hl = spl - retspl
-#         print(f"HL: {hl} dB HL (SPL: {spl}, RETSPL: {retspl})")
-#         TrFuncAE = 10 ** (spl / 20) * np.sqrt(2) * 2e-5 / amp
-#         try:
-#             results.append({
-#                 "fx": f,
-#                 "Amplitude": amp,
-#                 "SPL (dB SPL)": spl,
-#                 "TrFuncAE": TrFuncAE
-#             })
-#         except ValueError:
-#             print("Invalid input. Skipping.")
-#             continue
 for f in frequencies:
     try:
         while True:
@@ -131,6 +88,7 @@ for f in frequencies:
 # df = pd.DataFrame(results)
 # df.to_csv(output_file, index=False)
 # print(f"\nCalibration data saved to {output_file}")
+#%% === Save as .mat ===
 if ch == "L":
     output_file_mat = "DD-45left03-"+mode+".mat"
 elif ch == "R":
