@@ -1,5 +1,4 @@
-# This is a modification (Matlab to python) from Vaclavek's code.
-# Joanna 2025/02/24
+# This is a modification from Joanna's code, which can measure the pta with calibration result.
 
 import sys
 import numpy as np
